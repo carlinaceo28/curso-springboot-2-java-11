@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,36 +21,40 @@ import com.example.curso.services.PersonService;
 @RestController
 @RequestMapping(value = "/users")
 public class PersonResource {
-	
+
 	@Autowired
 	private PersonService service;
-	
+
 	@GetMapping
-	public ResponseEntity<List<Person>> findAll(){
+	public ResponseEntity<List<Person>> findAll() {
 		List<Person> list = service.findAll();
-		
+
 		return ResponseEntity.ok().body(list);
 	}
-	
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Person> findById(@PathVariable Long id){
-			Person obj = service.findById(id);
-			return ResponseEntity.ok().body(obj);
 
-}
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Person> findById(@PathVariable Long id) {
+		Person obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
+
+	}
+
 	@PostMapping
-	public ResponseEntity<Person> insert(@RequestBody Person obj){
+	public ResponseEntity<Person> insert(@RequestBody Person obj) {
 		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(obj.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).body(obj);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id){
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-}
 
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Person> update(@PathVariable Long id, @RequestBody Person obj) {
+		obj = service.update(id, obj);
+		return ResponseEntity.ok().body(obj);
+	}
+}
